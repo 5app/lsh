@@ -1,0 +1,58 @@
+{
+  "name": "@5app/js-template",
+  "version": "1.1.1",
+  "private": true,
+  "description": "Description",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint ./",
+    "lint-fix": "npm run lint -- --fix",
+    "lint-diff": "LIST=`git diff-index --name-only HEAD | grep '.*\\.js$';`; if [ \"$LIST\" ]; then eslint $LIST; fi",
+    "precommit-msg": "echo 'Running pre-commit checks... (skip using --no-verify)' && exit 0",
+    "semantic-release": "semantic-release",
+    "test": "echo 'No tests' && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/5app/js-template.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/5app/js-template/issues"
+  },
+  "homepage": "https://github.com/5app/js-template#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^8.2.0",
+    "@commitlint/config-conventional": "^8.2.0",
+    "@semantic-release/changelog": "^3.0.6",
+    "@semantic-release/git": "^7.0.18",
+    "eslint": "^6.7.2",
+    "eslint-config-5app": "^0.8.0",
+    "husky": "^3.1.0",
+    "semantic-release": "^15.13.31"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "rules": {
+      "subject-case": [
+        2,
+        "never",
+        [
+          "start-case",
+          "pascal-case"
+        ]
+      ]
+    }
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E  HUSKY_GIT_PARAMS",
+      "pre-commit": "npm run precommit-msg && npm run lint-diff"
+    }
+  }
+}
