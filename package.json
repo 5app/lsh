@@ -1,8 +1,8 @@
 {
-  "name": "@5app/js-template",
-  "version": "1.1.1",
+  "name": "@5app/lsh",
+  "version": "1.0.0",
   "private": true,
-  "description": "Description",
+  "description": "Locality Sensitive Hashing",
   "main": "index.js",
   "scripts": {
     "lint": "eslint ./",
@@ -14,13 +14,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/5app/js-template.git"
+    "url": "git+https://github.com/5app/lsh.git"
   },
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/5app/js-template/issues"
+    "url": "https://github.com/5app/lsh/issues"
   },
-  "homepage": "https://github.com/5app/js-template#readme",
+  "homepage": "https://github.com/5app/lsh#readme",
   "devDependencies": {
     "@commitlint/cli": "^8.2.0",
     "@commitlint/config-conventional": "^8.2.0",
