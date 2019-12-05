@@ -31,14 +31,14 @@ class Lsh {
    * Get a slice of column ids
    *
    * @param  {object} options - base column slice options appended by run options
-   * @param  {number} options.cursor_id - last id of the previous slice
+   * @param  {*} options.cursorId - last id of the previous slice
    * @param  {number} options.size - size of the slice
    * @returns {Promise<number[]>} - slice of column ids
    */
   // eslint-disable-next-line no-unused-vars
-  async getColumnIdSlice({cursor_id, size} = {}) {
+  async getColumnIdSlice({ cursorId, size } = {}) {
     throw new TypeError(
-      'Lsh.getColumnIdSlice(options) has not been implemented'
+      "Lsh.getColumnIdSlice(options) has not been implemented"
     );
   }
 
@@ -46,15 +46,13 @@ class Lsh {
    * Get a slice of row ids
    *
    * @param  {object} options - base row slice options appended by run options
-   * @param  {number} options.cursor_id - last id of the previous slice
+   * @param  {*} options.cursorId - last id of the previous slice
    * @param  {number} options.size} - size of the slice
    * @returns {Promise<number[]>} - slice of row ids
    */
   // eslint-disable-next-line no-unused-vars
-  async getRowIdSlice({cursor_id, size} = {}) {
-    throw new TypeError(
-      'Lsh.getRowIdSlice(options) has not been implemented'
-    );
+  async getRowIdSlice({ cursorId, size } = {}) {
+    throw new TypeError("Lsh.getRowIdSlice(options) has not been implemented");
   }
 
   /**
@@ -65,24 +63,20 @@ class Lsh {
    */
   // eslint-disable-next-line no-unused-vars
   async getRowCount(options = {}) {
-    throw new TypeError(
-      'Lsh.getRowCount(options) has not been implemented'
-    );
+    throw new TypeError("Lsh.getRowCount(options) has not been implemented");
   }
 
   /**
    * Get shingles or k-grams for a given column/row set
    *
    * @param {object} options - base shingle options appended by run options
-   * @param  {number[]} options.column_ids - [description]
-   * @param  {number[]} options.row_ids}  - [description]
-   * @returns {object<number, object<number, boolean>>} - object such that (shingles[row_id][column_id] === true) if a row an a column are associated
+   * @param  {*[]} options.columnIds - column ids
+   * @param  {*[]} options.rowIds}  - row ids
+   * @returns {object<number, object<number, boolean>>} - object such that (shingles[rowId][columnId] === true) if a row an a column are associated
    */
   // eslint-disable-next-line no-unused-vars
-  async getShingles({column_ids, row_ids} = {}) {
-    throw new TypeError(
-      'Lsh.getShingles(options) has not been implemented'
-    );
+  async getShingles({ columnIds, rowIds } = {}) {
+    throw new TypeError("Lsh.getShingles(options) has not been implemented");
   }
 
   /**
@@ -94,55 +88,56 @@ class Lsh {
    * @param  {number} chunk - size column and row slices per computation block
    * @returns {Promise<object>} - result of the computation finalisation
    */
-  async run(options = {by: 1}, chunk = 100) {
+  async run(options = { by: 1 }, chunk = 100) {
     const hasMore = true;
     const stamp = new Date();
     const begin = stamp.getTime();
     const { permutations, height } = this;
+    const { ignore, signature, format } = this.constructor;
     const data = {};
 
-    let column_cursor_id = 0;
-    let column_round = 0;
-    let column_count = 0;
-    let row_round = 0;
+    let columnCursorId;
+    let columnRound = 0;
+    let columnCount = 0;
+    let rowRound = 0;
     const total = await this.getRowCount(options); // TODO: prime number based implementation of RPA
 
     const {
-      random = Math.floor(Math.random() * total), // random offset (hash genesis)
+      random = Math.floor(Math.random() * total) // random offset (hash genesis)
     } = options;
 
     while (hasMore) {
       // get column id slice
       // eslint-disable-next-line no-await-in-loop
-      const column_ids = await this.getColumnIdSlice({
+      const columnIds = await this.getColumnIdSlice({
         ...options,
-        cursor_id: column_cursor_id,
-        size: chunk,
+        cursorId: columnCursorId,
+        size: chunk
       });
 
-      if (!column_ids || !column_ids.length) break;
+      if (!columnIds || !columnIds.length) break;
 
       // TODO: parallele processing ("by" sets of columns)
 
-      const buckets = {}; // { [bucket_id]: [...user_ids]  }
-      const index = {}; // { [user_id]: {minHash, bucket_ids} }
+      const buckets = {}; // { [bucketId]: [...columnIds]  }
+      const index = {}; // { [columnId]: {minHash, bucketIds} }
 
-      row_round = 0;
-      let row_cursor_id = 0;
+      rowRound = 0;
+      let rowCursorId;
 
-      column_round++;
+      columnRound++;
 
-      const c_count = column_ids.length;
-      column_cursor_id = column_ids[c_count - 1];
-      column_count += c_count;
+      const cCount = columnIds.length;
+      columnCursorId = columnIds[cCount - 1];
+      columnCount += cCount;
 
       // permutation table
       const minHash = {};
 
       // prepare permutations for each columns
 
-      column_ids.forEach(column_id => {
-        const hash = (minHash[column_id] = new Array(permutations));
+      columnIds.forEach(columnId => {
+        const hash = (minHash[columnId] = new Array(permutations));
 
         for (let i = 0; i < permutations; i++) {
           hash[i] = 0;
@@ -154,42 +149,45 @@ class Lsh {
       while (hasMore) {
         // get row id slice
         // eslint-disable-next-line no-await-in-loop
-        const row_ids = await this.getRowIdSlice({
+        const rowIds = await this.getRowIdSlice({
           ...options,
-          cursor_id: row_cursor_id,
-          size: chunk,
+          cursorId: rowCursorId,
+          size: chunk
         });
 
-        if (!row_ids || !row_ids.length) break;
+        if (!rowIds || !rowIds.length) break;
 
         // eslint-disable-next-line no-await-in-loop
         const shingles = await this.getShingles({
           ...options,
-          column_ids,
-          row_ids,
+          columnIds,
+          rowIds
         });
 
-        const row_offset = row_round * chunk;
-        row_round++;
+        const rowOffset = rowRound * chunk;
+        rowRound++;
 
-        const r_count = row_ids.length;
-        row_cursor_id = row_ids[r_count - 1];
+        const rCount = rowIds.length;
+        rowCursorId = rowIds[rCount - 1];
 
         // Min
 
-        column_ids.forEach(column_id => {
-          const hash = minHash[column_id];
+        columnIds.forEach(columnId => {
+          const hash = minHash[columnId];
 
-          for (let i = 0; i < r_count; i++) {
-            const row_id = row_ids[i];
-            const row = shingles[row_id];
+          for (let i = 0; i < rCount; i++) {
+            const rowId = rowIds[i];
+            const row = shingles[rowId];
 
-            // skip if no data (e.g. for colum=user and row=playlist, user has not done a playlist)
-            if (!row || !row[column_id]) continue;
+            // skip if no data
+            // (e.g. for colum = article and row = word,
+            // the word has never been used
+            // or the article does not use it)
+            if (!row || !row[columnId]) continue;
 
             for (let j = 0; j < permutations; j++) {
               const rand = random + j; // random permutation approximation = RPA
-              const perm = (row_offset + i + rand) % total; // permutation hash
+              const perm = ((rowOffset + i + rand) % total) + 1; // permutation hash
 
               const value = hash[j];
 
@@ -201,10 +199,10 @@ class Lsh {
 
       // Hash
 
-      for (const column_id in minHash) {
-        let mh = '';
-        const hash = minHash[column_id];
-        const bucket_ids = [];
+      for (const columnId in minHash) {
+        let mh = "";
+        const hash = minHash[columnId];
+        const bucketIds = [];
 
         for (let i = 0; i < hash.length; i += height) {
           // slicing bucket indices
@@ -213,24 +211,21 @@ class Lsh {
 
           for (let j = 0; j < height; j++) {
             // transpose index into hex and left pad with 0
-            const num = b[j];
-            const hex = num.toString(16);
-            bucket_id += hex.padStart(PAD, '0');
+            bucketId += signature(b[j], j);
           }
 
-          mh += bucket_id; // concatenate the bucket index to the user minHash
-          // skip "empty" bucket (i.e. when the user hasn't done any playlist)
-          if (EXP_ZEROS.test(bucket_id)) continue;
+          mh += format(bucketId); // concatenate the bucket index to the column minHash
+          // skip "empty" bucket (i.e. when an article is not related to any row)
+          if (ignore(bucketId)) continue;
 
-          const bucket =
-            buckets[bucket_id] || (buckets[bucket_id] = new Set());
+          const bucket = buckets[bucketId] || (buckets[bucketId] = new Set());
 
-          bucket_ids.push(bucket_id);
-          bucket.add(column_id);
+          bucketIds.push(bucketId);
+          bucket.add(columnId);
         }
 
-        if (bucket_ids.length) {
-          index[column_id] = {minHash: mh, bucket_ids};
+        if (bucketIds.length) {
+          index[columnId] = { minHash: mh, bucketIds };
         }
       }
 
@@ -242,19 +237,19 @@ class Lsh {
         buckets,
         index,
         stamp,
-        data,
+        data
       });
     }
 
-    const blocks = column_round * row_round;
+    const blocks = columnRound * rowRound;
 
     const report = await this.finalise({
       ...options,
       blocks,
-      columns: column_count,
+      columns: columnCount,
       rows: total,
       stamp,
-      data,
+      data
     });
 
     const end = Date.now();
@@ -264,7 +259,7 @@ class Lsh {
       ...report,
       blocks,
       random,
-      duration,
+      duration
     };
   }
 
@@ -279,12 +274,12 @@ class Lsh {
    * @returns {Promise<void>} -
    */
   // eslint-disable-next-line no-unused-vars
-  async store({index, buckets, stamp, data} = {}) {
-    throw new TypeError('Lsh.storeSlice(options) has not been implemented');
+  async store({ index, buckets, stamp, data } = {}) {
+    throw new TypeError("Lsh.store(options) has not been implemented");
   }
 
   /**
-   * [finalise description]
+   * Finalise Lsh computation
    *
    * @param  {object} options - base finalisation options appended by run options
    * @param  {number} options.blocks  - number or computed blocks
@@ -295,8 +290,10 @@ class Lsh {
    * @returns {Promise<void>} -
    */
   // eslint-disable-next-line no-unused-vars
-  async finalise({blocks, columns, rows, stamp, data} = {}) {
-    throw new TypeError('Lsh.finalise(options) has not been implemented');
+  async finalise({ blocks, columns, rows, stamp, data } = {}) {
+    throw new TypeError("Lsh.finalise(options) has not been implemented");
+  }
+
   /**
    * Maximum number of permutations
    *
