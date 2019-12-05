@@ -201,6 +201,7 @@ class Lsh {
 
       for (const columnId in minHash) {
         let mh = "";
+        let k = 0;
         const hash = minHash[columnId];
         const bucketIds = [];
 
@@ -214,7 +215,7 @@ class Lsh {
             bucketId += signature(b[j], j);
           }
 
-          mh += format(bucketId); // concatenate the bucket index to the column minHash
+          mh += format(bucketId, k++); // concatenate the bucket index to the column minHash
           // skip "empty" bucket (i.e. when an article is not related to any row)
           if (ignore(bucketId)) continue;
 
