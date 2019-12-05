@@ -1,23 +1,29 @@
-const PAD = 8; // the number of bits in an integer
-const EXP_ZEROS = /^([0])\1+$/; // e.g. EXP_ZEROS.test('0000') === true
-
 class Lsh {
   /**
    * LSH computation object.
    *
-   * Throws if the number of permutations (B * R) > 400
+   * Throws if the number of permutations (bands * height) > Lsh.limit (default: 400)
    *
-   * @param  {number} B - the number of band per permutation (max bucket per column)
-   * @param  {number} R - the number of row per bucket
+   * @param  {number} bands - the number of bands in a permutation (max bucket per column)
+   * @param  {number} height - the number of rows per band
    */
-  constructor(B = 25, R = 8) {
-    const permutations = B * R;
+  constructor(bands = 25, height = 8) {
+    const { limit } = this.constructor;
 
-    if (permutations > 400)
-      throw new Error(`LSH permutations (${B} * ${R}) limited to 400`);
+    if (!Number.isInteger(limit))
+      throw new Error("static Lsh.limit must be an integer");
 
-    this.B = B;
-    this.R = R;
+    if (limit < 0) throw new Error("static Lsh.limit must be positive");
+
+    const permutations = bands * height;
+
+    if (permutations > limit)
+      throw new Error(
+        `Lsh permutations (${bands} * ${height}) limited to ${limit}`
+      );
+
+    this.bands = bands;
+    this.height = height;
     this.permutations = permutations;
   }
 
@@ -92,7 +98,7 @@ class Lsh {
     const hasMore = true;
     const stamp = new Date();
     const begin = stamp.getTime();
-    const {permutations, R} = this;
+    const { permutations, height } = this;
     const data = {};
 
     let column_cursor_id = 0;
@@ -200,12 +206,12 @@ class Lsh {
         const hash = minHash[column_id];
         const bucket_ids = [];
 
-        for (let i = 0; i < hash.length; i += R) {
+        for (let i = 0; i < hash.length; i += height) {
           // slicing bucket indices
-          let bucket_id = '';
-          const b = hash.slice(i, i + R);
+          let bucketId = "";
+          const b = hash.slice(i, i + height);
 
-          for (let j = 0; j < R; j++) {
+          for (let j = 0; j < height; j++) {
             // transpose index into hex and left pad with 0
             const num = b[j];
             const hex = num.toString(16);
@@ -291,6 +297,14 @@ class Lsh {
   // eslint-disable-next-line no-unused-vars
   async finalise({blocks, columns, rows, stamp, data} = {}) {
     throw new TypeError('Lsh.finalise(options) has not been implemented');
+  /**
+   * Maximum number of permutations
+   *
+   * @returns {number} -
+   */
+  static get limit() {
+    return 400;
+  }
   }
 }
 
