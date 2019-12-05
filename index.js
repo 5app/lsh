@@ -305,6 +305,42 @@ class Lsh {
   static get limit() {
     return 400;
   }
+
+  /**
+   * Whether a bucket id has to be ignored for storage.
+   *
+   * @param  {string}  bucketId - bucket id
+   * @returns {Boolean} - true if the bucketId can be ignored
+   */
+  static ignore(bucketId) {
+    throw new TypeError("static Lsh.ignore(bucketId) has not been implemented");
+  }
+
+  /**
+   * Turn the numerical value of a signature into string
+   * to build a bucket id.
+   *
+   * @param  {number} value - signature value
+   * @param  {number} index - position of the value in a band
+   * @returns {string} - stringified signature value
+   */
+  static signature(value, index) {
+    throw new TypeError(
+      "static Lsh.signature(value, index) has not been implemented"
+    );
+  }
+
+  /**
+   * Format a bucket id to build a column's minhash
+   *
+   * @param  {string} bucketId - bucket id
+   * @param  {number} index - position of the band in the minhash
+   * @returns {string} - appendable version form of a given band
+   */
+  static format(bucketId, index) {
+    throw new TypeError(
+      "static Lsh.format(bucketId, index) has not been implemented"
+    );
   }
 }
 
