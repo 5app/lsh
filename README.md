@@ -71,7 +71,7 @@ module.exports = MyDataLsh
 2. Compute your minhashes
 ```javascript
 const MyDataLsh = require('./myDataLsh')
-const { compare } = require('./myComparator')
+const { compare } = require('./myComparator') // your minhash comparator function
 const myDataLsh = new MyDataLsh(10, 10)
 
 //...
