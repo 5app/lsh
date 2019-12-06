@@ -74,11 +74,14 @@ const MyDataLsh = require('./myDataLsh')
 const { compare, getItemMinHash } = require('./myMethods')
 const myDataLsh = new MyDataLsh(10, 10)
 
-//...
+// ...
   
+  // compute and store your items minhash  
   const size = 25 // size of blocks to be computed
   const report = await myDataLsh.run(custom, size)
   
+  // ...
+
   // compare your items minhash
   const [ minHashA, minHashB ] = await Promise.all([
     getItemMinHash(itemA.id),
