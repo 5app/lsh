@@ -1,4 +1,4 @@
-const Lsh = require('../../.');
+const Lsh = require('../../src/');
 const data = require('./data');
 const words = Object.keys(data.words);
 const {lists} = data;

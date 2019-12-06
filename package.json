@@ -2,7 +2,7 @@
   "name": "@5app/lsh",
   "version": "1.0.0",
   "description": "Locality Sensitive Hashing",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "lint": "eslint ./",
     "lint-fix": "npm run lint -- --fix",
@@ -53,6 +53,9 @@
       ]
     }
   },
+  "files": [
+    "src/"
+  ],
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E  HUSKY_GIT_PARAMS",
