@@ -68,7 +68,7 @@ class MyDataLsh extends Lsh {
 
 module.exports = MyDataLsh
 ```
-2. Compute your minhashes
+2. Compute and compare your minhashes
 ```javascript
 const MyDataLsh = require('./myDataLsh')
 const { compare, getItemMinHash } = require('./myMethods')
