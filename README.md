@@ -71,7 +71,7 @@ module.exports = MyDataLsh
 2. Compute your minhashes
 ```javascript
 const MyDataLsh = require('./myDataLsh')
-const { compare } = require('./myComparator') // your minhash comparator function
+const { compare, getItemMinHash } = require('./myMethods')
 const myDataLsh = new MyDataLsh(10, 10)
 
 //...
@@ -80,7 +80,12 @@ const myDataLsh = new MyDataLsh(10, 10)
   const report = await myDataLsh(custom, size)
   
   // compare your items minhash
-  const similarity = compare(itemA.minHash, itemB.minHash)
+  const [ minHashA, minHashB ] = await Promise.all([
+    getItemMinHash(itemA.id),
+    getItemMinHash(itemB.id)
+  ])
+  
+  const similarity = compare(minHashA, minHashB)
 // ...
 ```
 
