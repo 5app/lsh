@@ -1,6 +1,6 @@
 {
   "name": "@5app/lsh",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Locality Sensitive Hashing",
   "main": "src/index.js",
   "scripts": {

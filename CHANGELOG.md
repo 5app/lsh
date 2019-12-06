@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/5app/lsh/compare/v1.0.0...v1.0.1) (2019-12-06)
+
+
+### Performance Improvements
+
+* **package:** optimize package size ([c76c494](https://github.com/5app/lsh/commit/c76c494809927f0b1eacdeed8c37806fda2e208d))
+
 # 1.0.0 (2019-12-06)
 
 
