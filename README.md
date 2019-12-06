@@ -77,7 +77,7 @@ const myDataLsh = new MyDataLsh(10, 10)
 //...
   
   const size = 25 // size of blocks to be computed
-  const report = await myDataLsh(custom, size)
+  const report = await myDataLsh.run(custom, size)
   
   // compare your items minhash
   const [ minHashA, minHashB ] = await Promise.all([
