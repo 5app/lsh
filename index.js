@@ -75,7 +75,7 @@ class Lsh {
 	 *
 	 * @param {object} options - base shingle options appended by run options
 	 * @param  {*[]} options.columnIds - column ids
-	 * @param  {*[]} options.rowIds}  - row ids
+	 * @param  {*[]} options.rowIds} - row ids
 	 * @returns {object<number, object<number, boolean>>} - object such that (shingles[rowId][columnId] === true) if a row an a column are associated
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -289,11 +289,11 @@ class Lsh {
 	 * Finalise Lsh computation
 	 *
 	 * @param  {object} options - base finalisation options appended by run options
-	 * @param  {number} options.blocks  - number or computed blocks
+	 * @param  {number} options.blocks - number or computed blocks
 	 * @param  {number} options.columns - number of processed columns
-	 * @param  {number} options.rows    - number of processed rows
-	 * @param  {Date} options.stamp   - computation timestamp
-	 * @param  {object} options.data}  - custom implementation data
+	 * @param  {number} options.rows - number of processed rows
+	 * @param  {Date} options.stamp - computation timestamp
+	 * @param  {object} options.data} - custom implementation data
 	 * @returns {Promise<void>} -
 	 */
 	// eslint-disable-next-line no-unused-vars
