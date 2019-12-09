@@ -41,7 +41,8 @@ class MyDataLsh extends Lsh {
   }
   
   async store ({ index, buckets, data, ...custom }) {
-    // store a batch of minhashes and bucket info 
+    // store a batch of minhashes and bucket info
+    // use data object to store in memory
   }
   
   async finalise ({ blocks, columns, rows, stamp, data }) {
