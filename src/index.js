@@ -208,6 +208,7 @@ class Lsh {
 			for (const columnId in minHash) {
 				let mh = '';
 				let k = 0;
+				let valued;
 				const hash = minHash[columnId];
 				const bucketIds = [];
 
@@ -222,18 +223,19 @@ class Lsh {
 					}
 
 					mh += format(bucketId, k++); // concatenate the bucket index to the column minHash
+					bucketIds.push(bucketId);
 					// skip "empty" bucket (i.e. when an article is not related to any row)
 					if (ignore(bucketId)) continue;
 
 					const bucket = buckets[bucketId] || (buckets[bucketId] = new Set());
 
-					bucketIds.push(bucketId);
 					bucket.add(columnId);
+					valued = true;
 				}
 
-				if (bucketIds.length) {
-					index[columnId] = {minHash: mh, bucketIds};
-				}
+				if (!valued) continue;
+
+				index[columnId] = {minHash: mh, bucketIds};
 			}
 
 			// store slice index and buckets
